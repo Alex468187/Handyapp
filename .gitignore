@@ -1,0 +1,15 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+
+# Signatur-Schlüssel nie hochladen
+keys/
+*.keystore
+*.jks
