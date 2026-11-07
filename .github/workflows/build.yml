@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir -p ~/.android
           echo "$DEBUG_KEYSTORE" | base64 -di > ~/.android/debug.keystore
-      - run: flutter build apk --release --target-platform android-arm64 --build-number=${{ github.run_number }}
+      - run: flutter build apk --release --target-platform android-arm --build-number=${{ github.run_number }}
       - run: cp build/app/outputs/flutter-apk/app-release.apk Summer.apk
       - uses: actions/upload-artifact@v5
         with:
