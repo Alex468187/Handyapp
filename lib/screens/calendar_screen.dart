@@ -4,8 +4,10 @@ import 'package:table_calendar/table_calendar.dart';
 import '../data/task_store.dart';
 import '../models/task.dart';
 import '../util/format.dart';
+import '../widgets/main_fabs.dart';
 import '../widgets/task_tile.dart';
 import 'task_edit_screen.dart';
+import 'tasks_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -27,11 +29,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
         final day = dateOnly(_selected);
         final tasks = taskStore.tasksOn(day);
         return Scaffold(
-          appBar: AppBar(title: const Text('Kalender')),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => openTaskEditor(context, date: day),
-            child: const Icon(Icons.add),
+          appBar: AppBar(
+            title: const Text('Kalender'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.list),
+                tooltip: 'Alle Termine',
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const TasksScreen())),
+              ),
+            ],
           ),
+          floatingActionButton:
+              MainFabs(onAdd: () => openTaskEditor(context, date: day)),
           body: Column(
             children: [
               TableCalendar<Task>(
@@ -58,7 +68,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               const Divider(height: 1),
               Expanded(
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 88),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 160),
                   children: [
                     SectionHeader(formatDate(day)),
                     if (tasks.isEmpty)

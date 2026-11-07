@@ -32,6 +32,7 @@ class Task {
     int? dayOfMonth,
     bool? carryOver,
     Set<String>? doneDates,
+    this.remindBefore = 0,
   })  : startDate = dateOnly(startDate),
         weekdays = weekdays ?? {},
         dayOfMonth = dayOfMonth ?? startDate.day,
@@ -63,6 +64,9 @@ class Task {
 
   /// Erledigte Termine als „yyyy-MM-dd“.
   Set<String> doneDates;
+
+  /// Wie viele Minuten vor der Uhrzeit erinnert wird.
+  int remindBefore;
 
   static bool defaultCarryOver(RepeatType r) =>
       r == RepeatType.none || r == RepeatType.monthly || r == RepeatType.weekly;
@@ -136,6 +140,7 @@ class Task {
         'dayOfMonth': dayOfMonth,
         'carryOver': carryOver,
         'doneDates': doneDates.toList(),
+        'remindBefore': remindBefore,
       };
 
   factory Task.fromJson(Map<String, dynamic> j) => Task(
@@ -150,5 +155,6 @@ class Task {
         dayOfMonth: j['dayOfMonth'] as int?,
         carryOver: j['carryOver'] as bool?,
         doneDates: ((j['doneDates'] ?? const []) as List).cast<String>().toSet(),
+        remindBefore: (j['remindBefore'] ?? 0) as int,
       );
 }

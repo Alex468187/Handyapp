@@ -30,6 +30,9 @@ class TaskStore extends ChangeNotifier {
         _key, jsonEncode(_tasks.map((t) => t.toJson()).toList()));
   }
 
+  /// Ansichten neu zeichnen (z. B. wenn ein neuer Tag begonnen hat).
+  void refresh() => notifyListeners();
+
   void upsert(Task task) {
     final i = _tasks.indexWhere((t) => t.id == task.id);
     if (i >= 0) {

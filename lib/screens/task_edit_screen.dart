@@ -11,9 +11,13 @@ Future<void> openTaskEditor(BuildContext context, {Task? task, DateTime? date}) 
 }
 
 class TaskEditScreen extends StatefulWidget {
-  const TaskEditScreen({super.key, this.task, this.initialDate});
+  const TaskEditScreen({super.key, this.task, this.draft, this.initialDate});
 
+  /// Bestehende Aufgabe, die bearbeitet wird.
   final Task? task;
+
+  /// Vorausgefüllte neue Aufgabe (z. B. aus der Spracheingabe).
+  final Task? draft;
   final DateTime? initialDate;
 
   @override
@@ -31,13 +35,25 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
   late int _dayOfMonth;
   late bool _carryOver;
   bool _carryOverTouched = false;
+  late int _remindBefore;
 
   bool get _isNew => widget.task == null;
+
+  static const _remindOptions = {
+    0: 'Zur Uhrzeit',
+    5: '5 Min. vorher',
+    10: '10 Min. vorher',
+    15: '15 Min. vorher',
+    30: '30 Min. vorher',
+    60: '1 Std. vorher',
+    120: '2 Std. vorher',
+    1440: '1 Tag vorher',
+  };
 
   @override
   void initState() {
     super.initState();
-    final t = widget.task;
+    final t = widget.task ?? widget.draft;
     _title = TextEditingController(text: t?.title ?? '');
     _note = TextEditingController(text: t?.note ?? '');
     _start = t?.startDate ?? dateOnly(widget.initialDate ?? DateTime.now());
@@ -48,7 +64,9 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
     if (_weekdays.isEmpty) _weekdays.add(_start.weekday);
     _dayOfMonth = t?.dayOfMonth ?? _start.day;
     _carryOver = t?.carryOver ?? Task.defaultCarryOver(_repeat);
-    _carryOverTouched = t != null;
+    _carryOverTouched = widget.task != null;
+    _remindBefore = t?.remindBefore ?? 0;
+    if (!_remindOptions.containsKey(_remindBefore)) _remindBefore = 0;
   }
 
   @override
@@ -108,6 +126,7 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
       dayOfMonth: _dayOfMonth,
       carryOver: _carryOver,
       doneDates: widget.task?.doneDates,
+      remindBefore: _minutes == null ? 0 : _remindBefore,
     ));
     Navigator.of(context).pop();
   }
@@ -273,6 +292,20 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
                   ),
             onTap: _pickTime,
           ),
+          if (_minutes != null)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.notifications_outlined),
+              title: const Text('Erinnern'),
+              trailing: DropdownButton<int>(
+                value: _remindBefore,
+                onChanged: (v) => setState(() => _remindBefore = v!),
+                items: [
+                  for (final e in _remindOptions.entries)
+                    DropdownMenuItem(value: e.key, child: Text(e.value)),
+                ],
+              ),
+            ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             secondary: const Icon(Icons.warning_amber),

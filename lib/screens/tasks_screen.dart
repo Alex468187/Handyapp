@@ -15,13 +15,14 @@ class TasksScreen extends StatelessWidget {
         final tasks = [...taskStore.tasks]..sort((a, b) =>
             a.title.toLowerCase().compareTo(b.title.toLowerCase()));
         return Scaffold(
-          appBar: AppBar(title: const Text('Alle Aufgaben')),
+          appBar: AppBar(title: const Text('Alle Termine')),
           floatingActionButton: FloatingActionButton(
+            heroTag: null,
             onPressed: () => openTaskEditor(context, date: todayDate()),
             child: const Icon(Icons.add),
           ),
           body: tasks.isEmpty
-              ? const Center(child: Text('Noch keine Aufgaben.'))
+              ? const Center(child: Text('Noch keine Termine.'))
               : ListView(
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 88),
                   children: [
