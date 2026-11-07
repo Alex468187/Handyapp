@@ -451,7 +451,7 @@ VoiceResult parseVoice(String input, {DateTime? now}) {
 }
 
 final _leadFillers = _rx(
-    '^\\s*(?:hey|hallo|ok|okay|kairo|bitte|mal|noch|speichere|speichern|speicher|notiere|notieren|notier|merke? dir|schreibe?(?: mir)? auf|trage?(?: mir)? ein|erinnere? mich|erinnerung|neue[rn]? termin|neue aufgabe|termin|aufgabe|daran|dass|daß|an|und|für)(?:[\\s,:.!]+|\$)');
+    '^\\s*(?:hey|hallo|ok|okay|summer|bitte|mal|noch|speichere|speichern|speicher|notiere|notieren|notier|merke? dir|schreibe?(?: mir)? auf|trage?(?: mir)? ein|erinnere? mich|erinnerung|neue[rn]? termin|neue aufgabe|termin|aufgabe|daran|dass|daß|an|und|für)(?:[\\s,:.!]+|\$)');
 final _anyFillers = _rx(
     '⟨(?:ich muss|muss ich|ich soll|soll ich|ich sollte|ich will|ich möchte|dass ich|daß ich)⟩');
 final _trailFillers = _rx(

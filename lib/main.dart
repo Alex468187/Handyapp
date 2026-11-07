@@ -20,17 +20,17 @@ Future<void> main() async {
   Intl.defaultLocale = 'de_DE';
   await initializeDateFormatting('de_DE');
   await Future.wait([taskStore.load(), choreStore.load(), settings.load()]);
-  runApp(const KairoApp());
+  runApp(const SummerApp());
   Notifications.init();
 }
 
-class KairoApp extends StatelessWidget {
-  const KairoApp({super.key});
+class SummerApp extends StatelessWidget {
+  const SummerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Kairo',
+      title: 'Summer',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorSchemeSeed: Colors.indigo),
       darkTheme: ThemeData(
@@ -81,7 +81,7 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
       ShortcutItem(type: 'speak', localizedTitle: 'Sprechen'),
     ]);
 
-    // „Hey Google, öffne Kairo“ → direkt zuhören.
+    // „Hey Google, öffne Summer“ → direkt zuhören.
     if (settings.autoListen) {
       Future.delayed(const Duration(milliseconds: 400), () {
         if (!launchedByShortcut) _listenSoon();

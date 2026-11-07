@@ -1,6 +1,6 @@
 import 'task.dart';
 
-/// Aufgabe ohne festen Termin – Kairo erinnert zwischendurch, bis sie erledigt ist.
+/// Aufgabe ohne festen Termin – Summer erinnert zwischendurch, bis sie erledigt ist.
 class Chore {
   Chore({
     required this.id,

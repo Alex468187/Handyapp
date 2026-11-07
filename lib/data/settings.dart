@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Settings extends ChangeNotifier {
   static const _autoListenKey = 'auto_listen';
 
-  /// Beim Öffnen der App sofort zuhören („Hey Google, öffne Kairo“).
+  /// Beim Öffnen der App sofort zuhören („Hey Google, öffne Summer“).
   bool autoListen = true;
 
   Future<void> load() async {

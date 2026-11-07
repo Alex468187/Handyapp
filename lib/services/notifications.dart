@@ -34,7 +34,7 @@ class Notifications {
     android: AndroidNotificationDetails(
       'aufgaben',
       'Aufgaben',
-      channelDescription: 'Kairo erinnert an Aufgaben, die du vor dir herschiebst',
+      channelDescription: 'Summer erinnert an Aufgaben, die du vor dir herschiebst',
     ),
   );
 
@@ -113,7 +113,7 @@ class Notifications {
       }
     }
 
-    // Aufgaben ohne Termin: Kairo erinnert zwischendurch (nächste 7 Tage)
+    // Aufgaben ohne Termin: Summer erinnert zwischendurch (nächste 7 Tage)
     var n = 0;
     for (final c in choreStore.open) {
       final slots = _nagSlots[c.perDay];

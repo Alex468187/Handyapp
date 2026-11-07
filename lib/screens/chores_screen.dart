@@ -34,7 +34,7 @@ class _ChoresScreenState extends State<ChoresScreen> {
                   padding: EdgeInsets.all(16),
                   child: Text(
                     'Nichts offen. 🎉\n\nHier landet alles, was du erledigen '
-                    'musst, aber keinen festen Termin hat. Kairo erinnert '
+                    'musst, aber keinen festen Termin hat. Summer erinnert '
                     'dich zwischendurch daran, bis du es abhakst.',
                   ),
                 ),

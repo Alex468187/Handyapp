@@ -39,7 +39,7 @@ class MoreScreen extends StatelessWidget {
                   secondary: const Icon(Icons.mic),
                   title: const Text('Beim Öffnen sofort zuhören'),
                   subtitle: const Text(
-                      'Sag „Hey Google, öffne Kairo“ – und sprich direkt los.'),
+                      'Sag „Hey Google, öffne Summer“ – und sprich direkt los.'),
                   value: settings.autoListen,
                   onChanged: settings.setAutoListen,
                 ),
@@ -49,7 +49,7 @@ class MoreScreen extends StatelessWidget {
                   leading: Icon(Icons.touch_app),
                   title: Text('Schnellstart'),
                   subtitle: Text(
-                      'Halte das Kairo-Symbol auf dem Startbildschirm gedrückt '
+                      'Halte das Summer-Symbol auf dem Startbildschirm gedrückt '
                       '→ „Sprechen“. Das kannst du auch als eigenes Symbol '
                       'auf den Startbildschirm ziehen.'),
                 ),

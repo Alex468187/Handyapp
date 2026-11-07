@@ -143,7 +143,7 @@ class _ChoreDialogState extends State<_ChoreDialog> {
             onSubmitted: (_) => _save(),
           ),
           const SizedBox(height: 20),
-          const Text('Wie oft soll Kairo dich erinnern?'),
+          const Text('Wie oft soll Summer dich erinnern?'),
           const SizedBox(height: 8),
           SegmentedButton<int>(
             showSelectedIcon: false,

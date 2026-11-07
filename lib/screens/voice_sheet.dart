@@ -14,7 +14,7 @@ import 'task_edit_screen.dart';
 
 bool _sheetOpen = false;
 
-/// Öffnet Kairo: zuhören, verstehen, speichern.
+/// Öffnet Summer: zuhören, verstehen, speichern.
 Future<void> openVoice(BuildContext context) async {
   if (_sheetOpen) return;
   _sheetOpen = true;
@@ -73,7 +73,7 @@ class _VoiceSheetState extends State<VoiceSheet> {
       setState(() {
         _phase = _Phase.error;
         _error = 'Spracheingabe ist nicht verfügbar. '
-            'Bitte erlaube Kairo den Zugriff aufs Mikrofon.';
+            'Bitte erlaube Summer den Zugriff aufs Mikrofon.';
       });
       return;
     }
@@ -173,7 +173,7 @@ class _VoiceSheetState extends State<VoiceSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Kairo',
+          Text('Summer',
               textAlign: TextAlign.center,
               style: theme.textTheme.titleLarge
                   ?.copyWith(fontWeight: FontWeight.bold)),
