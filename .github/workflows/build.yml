@@ -33,11 +33,11 @@ jobs:
           mkdir -p ~/.android
           echo "$DEBUG_KEYSTORE" | base64 -di > ~/.android/debug.keystore
       - run: flutter build apk --release --build-number=${{ github.run_number }}
-      - run: cp build/app/outputs/flutter-apk/app-release.apk Manager.apk
+      - run: cp build/app/outputs/flutter-apk/app-release.apk Kairo.apk
       - uses: actions/upload-artifact@v5
         with:
           name: android
-          path: Manager.apk
+          path: Kairo.apk
 
   windows:
     runs-on: windows-latest
@@ -53,11 +53,11 @@ jobs:
       - run: flutter build windows --release --build-number=${{ github.run_number }}
       - name: Zippen
         shell: pwsh
-        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath Manager-Windows.zip
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath Kairo-Windows.zip
       - uses: actions/upload-artifact@v5
         with:
           name: windows
-          path: Manager-Windows.zip
+          path: Kairo-Windows.zip
 
   release:
     needs: [android, windows]
@@ -72,7 +72,7 @@ jobs:
           NOTES: ${{ github.event.head_commit.message }}
         run: >
           gh release create "build-${{ github.run_number }}"
-          Manager.apk Manager-Windows.zip
+          Kairo.apk Kairo-Windows.zip
           --repo "${{ github.repository }}"
           --title "Build ${{ github.run_number }}"
           --notes "$NOTES"

@@ -11,6 +11,6 @@ Der Nutzer programmiert nicht selbst – er testet nur die fertigen Builds.
 ## Build
 - Kein Flutter lokal (zu wenig Speicherplatz). Gebaut wird nur per GitHub Actions (`.github/workflows/build.yml`) bei jedem Push auf `main`.
 - `android/` und `windows/` werden nicht eingecheckt, sondern im Build von `tool/prepare.sh` per `flutter create` erzeugt. Anpassungen an diesen Dateien also dort per Skript machen.
-- Ergebnis: GitHub-Release `build-<Nummer>` mit `Manager.apk` und `Manager-Windows.zip`.
+- Ergebnis: GitHub-Release `build-<Nummer>` mit `Kairo.apk` und `Kairo-Windows.zip`.
 - Build verfolgen: `gh run watch` bzw. `gh run view --log-failed`.
 - Signatur-Schlüssel: `keys/debug.keystore` (nicht im Git, liegt als Secret `DEBUG_KEYSTORE` bei GitHub). Nicht verlieren, sonst lassen sich Updates nicht mehr drüber installieren.
