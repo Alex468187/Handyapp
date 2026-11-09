@@ -15,6 +15,7 @@ import 'screens/today_screen.dart';
 import 'screens/voice_sheet.dart';
 import 'services/notifications.dart';
 import 'services/sync.dart';
+import 'services/updater.dart';
 import 'services/voice_input.dart';
 
 Future<void> main() async {
@@ -75,6 +76,9 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) Updater.autoCheck(context);
+    });
     if (!VoiceInput.supported) return;
 
     var launchedByShortcut = false;
@@ -111,6 +115,7 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
     } else if (state == AppLifecycleState.resumed) {
       sync.startPolling();
       sync.syncNow();
+      Updater.autoCheck(context);
       final away = _pausedAt == null
           ? Duration.zero
           : DateTime.now().difference(_pausedAt!);

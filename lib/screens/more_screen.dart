@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/settings.dart';
 import '../services/sync.dart';
+import '../services/updater.dart';
 import 'account_screen.dart';
 import 'notes_screen.dart';
 import '../services/voice_input.dart';
@@ -79,6 +80,15 @@ class MoreScreen extends StatelessWidget {
                 ),
               ),
             ],
+            if (Updater.supported)
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.system_update),
+                  title: const Text('Nach Updates suchen'),
+                  subtitle: const Text('Installiert: Build $buildNumber'),
+                  onTap: () => Updater.manualCheck(context),
+                ),
+              ),
             const Padding(
               padding: EdgeInsets.fromLTRB(4, 16, 4, 4),
               child: Text('Kommt bald',

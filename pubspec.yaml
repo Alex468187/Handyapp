@@ -19,6 +19,9 @@ dependencies:
   timezone: ^0.10.0
   quick_actions: ^1.1.0
   supabase_flutter: ^2.8.0
+  http: ^1.2.0
+  path_provider: ^2.1.0
+  open_filex: ^4.5.0
 
 dev_dependencies:
   flutter_test:
