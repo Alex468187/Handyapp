@@ -13,7 +13,6 @@ class MoreScreen extends StatelessWidget {
 
   static const _upcoming = [
     (Icons.lock, 'Passwörter', 'Logins mit E-Mail, Benutzername, Telefonnummer'),
-    (Icons.mail, 'Nachrichten', 'Wichtige Mails und WhatsApp'),
     (Icons.swap_horiz, 'Dateien teilen', 'Zwischen Handy und PC'),
   ];
 
@@ -67,6 +66,35 @@ class MoreScreen extends StatelessWidget {
                       'Sag „Hey Google, öffne Summer“ – und sprich direkt los.'),
                   value: settings.autoListen,
                   onChanged: settings.setAutoListen,
+                ),
+              ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const ListTile(
+                        leading: Icon(Icons.record_voice_over),
+                        title: Text('Auf „Summer“ reagieren'),
+                        subtitle: Text(
+                            'Sag z. B. „Summer, morgen um 15 Uhr Zahnarzt“ – '
+                            'ohne etwas anzutippen. Android piept dabei ab und zu.'),
+                      ),
+                      for (final mode in WakeMode.values)
+                        RadioListTile<WakeMode>(
+                          value: mode,
+                          groupValue: settings.wakeMode,
+                          title: Text(mode.label),
+                          subtitle: mode == WakeMode.always
+                              ? const Text('Kommt noch – braucht ein Picovoice-Konto')
+                              : null,
+                          onChanged: mode == WakeMode.always
+                              ? null
+                              : (v) => settings.setWakeMode(v!),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               const Card(

@@ -9,31 +9,37 @@ import '../models/chore.dart';
 import '../models/task.dart';
 import '../services/voice_input.dart';
 import '../services/voice_parser.dart';
+import '../services/wake_listener.dart';
 import '../util/format.dart';
 import 'task_edit_screen.dart';
 
 bool _sheetOpen = false;
 
 /// Öffnet Summer: zuhören, verstehen, speichern.
-Future<void> openVoice(BuildContext context) async {
+/// Mit [text] (schon Gesagtes, z. B. nach „Summer, …“) direkt auswerten.
+Future<void> openVoice(BuildContext context, {String? text}) async {
   if (_sheetOpen) return;
   _sheetOpen = true;
+  wakeListener.block();
   try {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      builder: (_) => const VoiceSheet(),
+      builder: (_) => VoiceSheet(initialText: text),
     );
   } finally {
     _sheetOpen = false;
+    wakeListener.unblock();
   }
 }
 
 enum _Phase { starting, listening, result, error }
 
 class VoiceSheet extends StatefulWidget {
-  const VoiceSheet({super.key});
+  const VoiceSheet({super.key, this.initialText});
+
+  final String? initialText;
 
   @override
   State<VoiceSheet> createState() => _VoiceSheetState();
@@ -50,7 +56,14 @@ class _VoiceSheetState extends State<VoiceSheet> {
   @override
   void initState() {
     super.initState();
-    _start();
+    final t = widget.initialText?.trim() ?? '';
+    if (t.isEmpty) {
+      _start();
+    } else {
+      _text = t;
+      _phase = _Phase.listening;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _finish());
+    }
   }
 
   @override

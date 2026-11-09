@@ -16,4 +16,8 @@ fi
 # Android: Berechtigungen (Mikrofon, Benachrichtigungen) und Gradle-Einstellungen
 if [ "$RUNNER_OS" != "Windows" ]; then
   python3 tool/patch_android.py
+  # Eigener Android-Code (Nachrichten von WhatsApp/Gmail mitlesen)
+  KT=android/app/src/main/kotlin/de/alex468187/handyapp
+  test -f "$KT/MainActivity.kt" || { echo "MainActivity.kt nicht gefunden"; exit 1; }
+  cp android_src/*.kt "$KT/"
 fi

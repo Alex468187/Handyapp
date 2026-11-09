@@ -38,6 +38,15 @@ RECEIVERS = """
             </intent-filter>
         </receiver>
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"/>
+        <service
+            android:name="de.alex468187.handyapp.SummerListener"
+            android:label="Summer"
+            android:exported="true"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService"/>
+            </intent-filter>
+        </service>
     </application>"""
 
 SPEECH_QUERY = """<queries>

@@ -5,11 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import 'data/chore_store.dart';
+import 'data/message_store.dart';
 import 'data/note_store.dart';
 import 'data/settings.dart';
 import 'data/task_store.dart';
 import 'screens/calendar_screen.dart';
 import 'screens/chores_screen.dart';
+import 'screens/messages_screen.dart';
 import 'screens/more_screen.dart';
 import 'screens/today_screen.dart';
 import 'screens/voice_sheet.dart';
@@ -17,6 +19,7 @@ import 'services/notifications.dart';
 import 'services/sync.dart';
 import 'services/updater.dart';
 import 'services/voice_input.dart';
+import 'services/wake_listener.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +34,8 @@ Future<void> main() async {
   runApp(const SummerApp());
   Notifications.init();
   sync.init();
+  messageStore.init().then((_) => messageStore.startPolling());
+  wakeListener.init();
 }
 
 class SummerApp extends StatelessWidget {
@@ -65,11 +70,31 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   int _index = 0;
   DateTime? _pausedAt;
 
-  static const _screens = [
-    TodayScreen(),
-    CalendarScreen(),
-    ChoresScreen(),
-    MoreScreen(),
+  static final _tabs = <(Widget, NavigationDestination)>[
+    (
+      const TodayScreen(),
+      const NavigationDestination(icon: Icon(Icons.today), label: 'Heute')
+    ),
+    (
+      const CalendarScreen(),
+      const NavigationDestination(
+          icon: Icon(Icons.calendar_month), label: 'Kalender')
+    ),
+    (
+      const ChoresScreen(),
+      const NavigationDestination(
+          icon: Icon(Icons.checklist), label: 'Aufgaben')
+    ),
+    if (MessageStore.supported)
+      (
+        const MessagesScreen(),
+        const NavigationDestination(
+            icon: Icon(Icons.forum), label: 'Nachrichten')
+      ),
+    (
+      const MoreScreen(),
+      const NavigationDestination(icon: Icon(Icons.apps), label: 'Mehr')
+    ),
   ];
 
   @override
@@ -80,6 +105,12 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
       if (mounted) Updater.autoCheck(context);
     });
     if (!VoiceInput.supported) return;
+
+    // „Summer, …“ bei offener App
+    wakeListener.onWake = (rest) {
+      if (mounted) openVoice(context, text: rest);
+    };
+    wakeListener.setForeground(true);
 
     var launchedByShortcut = false;
     const quickActions = QuickActions();
@@ -112,9 +143,13 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
     if (state == AppLifecycleState.paused) {
       _pausedAt = DateTime.now();
       sync.stopPolling();
+      messageStore.stopPolling();
+      wakeListener.setForeground(false);
     } else if (state == AppLifecycleState.resumed) {
       sync.startPolling();
       sync.syncNow();
+      messageStore.startPolling();
+      wakeListener.setForeground(true);
       Updater.autoCheck(context);
       final away = _pausedAt == null
           ? Duration.zero
@@ -138,17 +173,12 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _index, children: _screens),
+      body: IndexedStack(
+          index: _index, children: [for (final t in _tabs) t.$1]),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.today), label: 'Heute'),
-          NavigationDestination(
-              icon: Icon(Icons.calendar_month), label: 'Kalender'),
-          NavigationDestination(icon: Icon(Icons.checklist), label: 'Aufgaben'),
-          NavigationDestination(icon: Icon(Icons.apps), label: 'Mehr'),
-        ],
+        destinations: [for (final t in _tabs) t.$2],
       ),
     );
   }
