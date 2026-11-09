@@ -157,15 +157,8 @@ class Updater {
 
   static Future<File> _download(
       UpdateInfo info, ValueNotifier<double?> progress) async {
-    Directory dir;
-    if (Platform.isAndroid) {
-      final ext = await getExternalCacheDirectories();
-      dir = (ext != null && ext.isNotEmpty)
-          ? ext.first
-          : await getTemporaryDirectory();
-    } else {
-      dir = await getTemporaryDirectory();
-    }
+    // App-interner Cache: braucht keine Speicher-Berechtigung.
+    final dir = await getTemporaryDirectory();
     final name = Platform.isAndroid ? 'Summer-update.apk' : 'Summer-update.zip';
     final file = File('${dir.path}${Platform.pathSeparator}$name');
 
