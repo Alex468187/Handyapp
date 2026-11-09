@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import 'data/chore_store.dart';
+import 'data/note_store.dart';
 import 'data/settings.dart';
 import 'data/task_store.dart';
 import 'screens/calendar_screen.dart';
@@ -13,15 +14,22 @@ import 'screens/more_screen.dart';
 import 'screens/today_screen.dart';
 import 'screens/voice_sheet.dart';
 import 'services/notifications.dart';
+import 'services/sync.dart';
 import 'services/voice_input.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = 'de_DE';
   await initializeDateFormatting('de_DE');
-  await Future.wait([taskStore.load(), choreStore.load(), settings.load()]);
+  await Future.wait([
+    taskStore.load(),
+    choreStore.load(),
+    noteStore.load(),
+    settings.load(),
+  ]);
   runApp(const SummerApp());
   Notifications.init();
+  sync.init();
 }
 
 class SummerApp extends StatelessWidget {
@@ -66,8 +74,8 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    if (!VoiceInput.supported) return;
     WidgetsBinding.instance.addObserver(this);
+    if (!VoiceInput.supported) return;
 
     var launchedByShortcut = false;
     const quickActions = QuickActions();
@@ -99,13 +107,18 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       _pausedAt = DateTime.now();
+      sync.stopPolling();
     } else if (state == AppLifecycleState.resumed) {
+      sync.startPolling();
+      sync.syncNow();
       final away = _pausedAt == null
           ? Duration.zero
           : DateTime.now().difference(_pausedAt!);
       _pausedAt = null;
       taskStore.refresh(); // „Heute“ neu berechnen, falls ein neuer Tag ist
-      if (settings.autoListen && away > const Duration(minutes: 2)) {
+      if (VoiceInput.supported &&
+          settings.autoListen &&
+          away > const Duration(minutes: 2)) {
         _listenSoon();
       }
     }

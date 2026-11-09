@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../data/settings.dart';
+import '../services/sync.dart';
+import 'account_screen.dart';
+import 'notes_screen.dart';
 import '../services/voice_input.dart';
 import 'tasks_screen.dart';
 
@@ -8,7 +11,6 @@ class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
 
   static const _upcoming = [
-    (Icons.sticky_note_2, 'Notizen', 'Geschenkideen, Gedanken, alles Mögliche'),
     (Icons.lock, 'Passwörter', 'Logins mit E-Mail, Benutzername, Telefonnummer'),
     (Icons.mail, 'Nachrichten', 'Wichtige Mails und WhatsApp'),
     (Icons.swap_horiz, 'Dateien teilen', 'Zwischen Handy und PC'),
@@ -17,12 +19,34 @@ class MoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: settings,
+      listenable: Listenable.merge([settings, sync]),
       builder: (context, _) => Scaffold(
         appBar: AppBar(title: const Text('Mehr')),
         body: ListView(
           padding: const EdgeInsets.all(12),
           children: [
+            Card(
+              child: ListTile(
+                leading: Icon(sync.signedIn ? Icons.cloud_done : Icons.cloud_off),
+                title: const Text('Konto & Abgleich'),
+                subtitle: Text(sync.signedIn
+                    ? 'Angemeldet als ${sync.user?.email}'
+                    : 'Anmelden, um Handy, PC und Claude zu verbinden'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AccountScreen())),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.sticky_note_2),
+                title: const Text('Notizen'),
+                subtitle: const Text('Geschenkideen, Gedanken, alles Mögliche'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const NotesScreen())),
+              ),
+            ),
             Card(
               child: ListTile(
                 leading: const Icon(Icons.event_note),

@@ -1,69 +1,35 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../models/task.dart';
+import 'synced_store.dart';
 
-class TaskStore extends ChangeNotifier {
-  static const _key = 'tasks_v1';
+class TaskStore extends SyncedStore<Task> {
+  TaskStore() : super('task', 'tasks_v1');
 
-  final List<Task> _tasks = [];
+  @override
+  String idOf(Task item) => item.id;
+  @override
+  Map<String, dynamic> encode(Task item) => item.toJson();
+  @override
+  Task decode(Map<String, dynamic> json) => Task.fromJson(json);
 
-  List<Task> get tasks => List.unmodifiable(_tasks);
+  List<Task> get tasks => List.unmodifiable(items.values);
 
-  Future<void> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key);
-    if (raw != null) {
-      final list = jsonDecode(raw) as List;
-      _tasks
-        ..clear()
-        ..addAll(list.map((e) => Task.fromJson(e as Map<String, dynamic>)));
-    }
-    notifyListeners();
-  }
+  void upsert(Task task) => put(task);
 
-  Future<void> _save() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-        _key, jsonEncode(_tasks.map((t) => t.toJson()).toList()));
-  }
-
-  /// Ansichten neu zeichnen (z. B. wenn ein neuer Tag begonnen hat).
-  void refresh() => notifyListeners();
-
-  void upsert(Task task) {
-    final i = _tasks.indexWhere((t) => t.id == task.id);
-    if (i >= 0) {
-      _tasks[i] = task;
-    } else {
-      _tasks.add(task);
-    }
-    notifyListeners();
-    _save();
-  }
-
-  void delete(String id) {
-    _tasks.removeWhere((t) => t.id == id);
-    notifyListeners();
-    _save();
-  }
+  void delete(String id) => remove(id);
 
   void toggleDone(Task task, DateTime day) {
     final key = dateKey(dateOnly(day));
     if (!task.doneDates.remove(key)) task.doneDates.add(key);
-    notifyListeners();
-    _save();
+    touched(task.id);
   }
 
   List<Task> tasksOn(DateTime day) =>
-      _tasks.where((t) => t.occursOn(day)).toList()..sort(_byTime);
+      items.values.where((t) => t.occursOn(day)).toList()..sort(_byTime);
 
   /// Verpasste, noch offene Termine vor [today].
   List<(Task, DateTime)> overdue(DateTime today) {
     final result = <(Task, DateTime)>[];
-    for (final t in _tasks) {
+    for (final t in items.values) {
       final d = t.overdueDate(today);
       if (d != null) result.add((t, d));
     }
