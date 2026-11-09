@@ -57,14 +57,17 @@ g = replace_once(
     "compileOptions {\n        isCoreLibraryDesugaringEnabled = true",
     "compileOptions",
 )
-# Nur 32-Bit-ARM-Bibliotheken einpacken (passend zu --target-platform android-arm),
-# sonst wählt ein 64-Bit-Handy den arm64-Ordner, in dem libflutter.so fehlt.
-g = replace_once(
-    g,
-    "defaultConfig {",
-    'defaultConfig {\n        ndk { abiFilters += listOf("armeabi-v7a") }',
-    "defaultConfig",
-)
+# Nur 64-Bit-ARM einpacken (passend zu --target-platform android-arm64):
+# Plugin-Bibliotheken anderer Prozessoren weglassen, damit die APK klein bleibt.
+g += """
+android {
+    packaging {
+        jniLibs {
+            excludes += listOf("lib/armeabi-v7a/**", "lib/x86/**", "lib/x86_64/**")
+        }
+    }
+}
+"""
 g += """
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
