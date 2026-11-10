@@ -1,3 +1,4 @@
+import '../widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -26,6 +27,7 @@ class TodayScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
+            leading: const MenuButton(),
             title: Text(DateFormat('EEEE, d. MMMM').format(DateTime.now())),
           ),
           floatingActionButton:

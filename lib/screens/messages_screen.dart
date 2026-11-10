@@ -1,3 +1,4 @@
+import '../widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 
 import '../data/message_store.dart';
@@ -25,6 +26,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
         final list = store.visible(onlyImportant: _onlyImportant);
         return Scaffold(
           appBar: AppBar(
+            leading: const MenuButton(),
             title: const Text('Nachrichten'),
             actions: [
               if (store.accounts.isNotEmpty)

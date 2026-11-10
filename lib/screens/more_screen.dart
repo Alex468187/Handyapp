@@ -1,9 +1,11 @@
+import '../widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 
 import '../data/settings.dart';
 import '../services/sync.dart';
 import '../services/updater.dart';
 import 'account_screen.dart';
+import 'connections_screen.dart';
 import 'notes_screen.dart';
 import 'passwords_screen.dart';
 import '../services/voice_input.dart';
@@ -21,7 +23,8 @@ class MoreScreen extends StatelessWidget {
     return ListenableBuilder(
       listenable: Listenable.merge([settings, sync]),
       builder: (context, _) => Scaffold(
-        appBar: AppBar(title: const Text('Mehr')),
+        appBar: AppBar(
+            leading: const MenuButton(), title: const Text('Mehr')),
         body: ListView(
           padding: const EdgeInsets.all(12),
           children: [
@@ -35,6 +38,16 @@ class MoreScreen extends StatelessWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const AccountScreen())),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.hub),
+                title: const Text('Verbindungen'),
+                subtitle: const Text('Gmail, WhatsApp und Claude verbinden'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => const ConnectionsScreen())),
               ),
             ),
             Card(

@@ -1,3 +1,4 @@
+import '../widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -30,6 +31,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         final tasks = taskStore.tasksOn(day);
         return Scaffold(
           appBar: AppBar(
+            leading: const MenuButton(),
             title: const Text('Kalender'),
             actions: [
               IconButton(

@@ -1,3 +1,4 @@
+import '../widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 
 import '../data/chore_store.dart';
@@ -24,7 +25,8 @@ class _ChoresScreenState extends State<ChoresScreen> {
         final open = choreStore.open;
         final done = choreStore.done;
         return Scaffold(
-          appBar: AppBar(title: const Text('Aufgaben')),
+          appBar: AppBar(
+              leading: const MenuButton(), title: const Text('Aufgaben')),
           floatingActionButton: MainFabs(onAdd: () => editChore(context)),
           body: ListView(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 160),

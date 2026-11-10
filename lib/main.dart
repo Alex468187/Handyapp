@@ -22,6 +22,7 @@ import 'services/updater.dart';
 import 'services/vault.dart';
 import 'services/voice_input.dart';
 import 'services/wake_listener.dart';
+import 'widgets/app_drawer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,31 +75,13 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   int _index = 0;
   DateTime? _pausedAt;
 
-  static final _tabs = <(Widget, NavigationDestination)>[
-    (
-      const TodayScreen(),
-      const NavigationDestination(icon: Icon(Icons.today), label: 'Heute')
-    ),
-    (
-      const CalendarScreen(),
-      const NavigationDestination(
-          icon: Icon(Icons.calendar_month), label: 'Kalender')
-    ),
-    (
-      const ChoresScreen(),
-      const NavigationDestination(
-          icon: Icon(Icons.checklist), label: 'Aufgaben')
-    ),
+  static final _tabs = <(Widget, IconData, String)>[
+    (const TodayScreen(), Icons.today, 'Heute'),
+    (const CalendarScreen(), Icons.calendar_month, 'Kalender'),
+    (const ChoresScreen(), Icons.checklist, 'Aufgaben'),
     if (MessageStore.supported)
-      (
-        const MessagesScreen(),
-        const NavigationDestination(
-            icon: Icon(Icons.forum), label: 'Nachrichten')
-      ),
-    (
-      const MoreScreen(),
-      const NavigationDestination(icon: Icon(Icons.apps), label: 'Mehr')
-    ),
+      (const MessagesScreen(), Icons.forum, 'Nachrichten'),
+    (const MoreScreen(), Icons.settings, 'Mehr'),
   ];
 
   @override
@@ -179,12 +162,21 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: homeScaffoldKey,
+      drawer: AppDrawer(
+        tabLabels: [for (final t in _tabs) (t.$2, t.$3)],
+        selectedTab: _index,
+        onTab: (i) => setState(() => _index = i),
+      ),
       body: IndexedStack(
           index: _index, children: [for (final t in _tabs) t.$1]),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: [for (final t in _tabs) t.$2],
+        destinations: [
+          for (final t in _tabs)
+            NavigationDestination(icon: Icon(t.$2), label: t.$3),
+        ],
       ),
     );
   }
