@@ -30,10 +30,16 @@ jobs:
         env:
           DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
         run: |
-          mkdir -p ~/.android
-          echo "$DEBUG_KEYSTORE" | base64 -di > ~/.android/debug.keystore
+          echo "$DEBUG_KEYSTORE" | base64 -di > "$RUNNER_TEMP/summer.keystore"
+          keytool -list -keystore "$RUNNER_TEMP/summer.keystore" -storepass android -alias androiddebugkey
+          echo "SUMMER_KEYSTORE=$RUNNER_TEMP/summer.keystore" >> "$GITHUB_ENV"
       - run: flutter build apk --release --target-platform android-arm64 --build-number=${{ github.run_number }} --dart-define=BUILD_NUMBER=${{ github.run_number }}
       - run: cp build/app/outputs/flutter-apk/app-release.apk Summer.apk
+      - name: Signatur prüfen (muss immer gleich sein, sonst gehen Updates nicht)
+        run: |
+          APKSIGNER=$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --print-certs Summer.apk | tee certs.txt
+          grep -qi "SHA-256 digest: 24b26996f3794db318140780d4a676594f53f7079ba79b6a950ed26cff529e7d" certs.txt
       - uses: actions/upload-artifact@v5
         with:
           name: android

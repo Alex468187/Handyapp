@@ -67,6 +67,30 @@ g = replace_once(
     "compileOptions {\n        isCoreLibraryDesugaringEnabled = true",
     "compileOptions",
 )
+# Fester Signatur-Schlüssel (vom Build-Server in SUMMER_KEYSTORE abgelegt).
+# Ohne ihn hat jeder Build eine andere Signatur und Updates schlagen fehl.
+g = replace_once(
+    g,
+    "    buildTypes {",
+    """    signingConfigs {
+        create("summer") {
+            storeFile = file(System.getenv("SUMMER_KEYSTORE") ?: "${System.getProperty("user.home")}/.android/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
+    buildTypes {""",
+    "buildTypes",
+)
+g = replace_once(
+    g,
+    'signingConfig = signingConfigs.getByName("debug")',
+    'signingConfig = signingConfigs.getByName("summer")',
+    "release signingConfig",
+)
+
 # Nur 64-Bit-ARM einpacken (passend zu --target-platform android-arm64):
 # Plugin-Bibliotheken anderer Prozessoren weglassen, damit die APK klein bleibt.
 g += """
