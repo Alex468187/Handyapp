@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/chore_store.dart';
 import '../data/note_store.dart';
+import '../data/secret_store.dart';
 import '../data/synced_store.dart';
 import '../data/task_store.dart';
 
@@ -15,7 +16,7 @@ const _cursorKey = 'sync_cursor';
 
 /// Abgleich aller Daten mit Supabase (Handy ↔ PC ↔ Claude).
 class Sync extends ChangeNotifier {
-  final List<SyncedStore> _stores = [taskStore, choreStore, noteStore];
+  final List<SyncedStore> _stores = [taskStore, choreStore, noteStore, secretStore];
 
   bool _ready = false;
   bool _running = false;

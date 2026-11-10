@@ -5,7 +5,7 @@
 create table if not exists public.items (
   user_id    uuid        not null default auth.uid() references auth.users on delete cascade,
   id         text        not null,
-  kind       text        not null check (kind in ('task', 'chore', 'note')),
+  kind       text        not null,
   data       jsonb,
   deleted    boolean     not null default false,
   updated_at timestamptz not null default clock_timestamp(),
@@ -35,3 +35,8 @@ create policy items_own on public.items
   with check (user_id = auth.uid());
 
 grant select, insert, update, delete on public.items to authenticated;
+
+-- Erlaubte Typen (secret = verschlüsselter Passwort-Eintrag).
+alter table public.items drop constraint if exists items_kind_check;
+alter table public.items add constraint items_kind_check
+  check (kind in ('task', 'chore', 'note', 'secret'));

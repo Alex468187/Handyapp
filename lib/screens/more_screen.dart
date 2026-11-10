@@ -5,6 +5,7 @@ import '../services/sync.dart';
 import '../services/updater.dart';
 import 'account_screen.dart';
 import 'notes_screen.dart';
+import 'passwords_screen.dart';
 import '../services/voice_input.dart';
 import 'tasks_screen.dart';
 
@@ -12,7 +13,6 @@ class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
 
   static const _upcoming = [
-    (Icons.lock, 'Passwörter', 'Logins mit E-Mail, Benutzername, Telefonnummer'),
     (Icons.swap_horiz, 'Dateien teilen', 'Zwischen Handy und PC'),
   ];
 
@@ -45,6 +45,16 @@ class MoreScreen extends StatelessWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const NotesScreen())),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.lock),
+                title: const Text('Passwörter'),
+                subtitle: const Text('Konten mit E-Mail, Benutzername, Telefonnummer'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const PasswordsScreen())),
               ),
             ),
             Card(

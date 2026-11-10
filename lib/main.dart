@@ -7,6 +7,7 @@ import 'package:quick_actions/quick_actions.dart';
 import 'data/chore_store.dart';
 import 'data/message_store.dart';
 import 'data/note_store.dart';
+import 'data/secret_store.dart';
 import 'data/settings.dart';
 import 'data/task_store.dart';
 import 'screens/calendar_screen.dart';
@@ -18,6 +19,7 @@ import 'screens/voice_sheet.dart';
 import 'services/notifications.dart';
 import 'services/sync.dart';
 import 'services/updater.dart';
+import 'services/vault.dart';
 import 'services/voice_input.dart';
 import 'services/wake_listener.dart';
 
@@ -29,6 +31,7 @@ Future<void> main() async {
     taskStore.load(),
     choreStore.load(),
     noteStore.load(),
+    secretStore.load(),
     settings.load(),
   ]);
   runApp(const SummerApp());
@@ -36,6 +39,7 @@ Future<void> main() async {
   sync.init();
   messageStore.init().then((_) => messageStore.startPolling());
   wakeListener.init();
+  vault.init();
 }
 
 class SummerApp extends StatelessWidget {
@@ -155,6 +159,8 @@ class _HomeShellState extends State<HomeShell> with WidgetsBindingObserver {
           ? Duration.zero
           : DateTime.now().difference(_pausedAt!);
       _pausedAt = null;
+      // Passwörter wieder sperren, wenn die App länger weg war.
+      if (away > const Duration(minutes: 1)) vault.lock();
       taskStore.refresh(); // „Heute“ neu berechnen, falls ein neuer Tag ist
       if (VoiceInput.supported &&
           settings.autoListen &&
